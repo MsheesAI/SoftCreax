@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import os
 from pydantic import BaseModel, Field
 from prompts import prompt
+from states import *
+from langgraph.constants import END
+from langgraph.graph import StateGraph
 
 load_dotenv()
 
@@ -11,21 +14,18 @@ llm = ChatGroq(model='openai/gpt-oss-120b', groq_api_key=api_key)
 
 user_prompt = "Create a simple calculator web application"
 
-prompt = prompt.Planner_prompt(user_prompt)
+def planner_agent(state:dict) -> dict:
+    user_prompt = state['user_prompt']
+    resp = llm.with_structured_output(Plan,method='json_schema').invoke(prompt.Planner_prompt(user_prompt))
+    return {'plan': resp}
 
-class File(BaseModel):
-    path : str = Field(description="The path of the file to be created or modified ")
-    purpose : str = Field(description="The purpose of the file to be created e.g 'main application logic , 'data processing module'")
+graph = StateGraph(dict)
+graph.add_node('planner',planner_agent)
+graph.set_entry_point('planner')
 
-class Plan(BaseModel):
-    name : str = Field(description="The name of the Application to be built")
-    description : str = Field(description="A brief description of the application e.g 'A web application for managing persons data'")
-    tech_stack : str = Field(description="The tech stack to be used for the application e.g 'React, flask, Javascript , Python etc'")
-    features:list[str] = Field(description="A list of features A app should have e.g 'User authentication, CRUD operations, Data visualization etc'")
-    files : list[File] = Field(description="A list of files to be created each with a 'path'and 'purpose'")
+agent = graph.compile()
 
+user_prompt = 'Create a simple Calculator Web Application'
 
-
-
-resp = llm.with_structured_output(Plan,method='json_schema').invoke(prompt)
-print(resp)
+result = agent.invoke({'user_prompt': user_prompt})
+print(result)
