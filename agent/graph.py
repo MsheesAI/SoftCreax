@@ -19,8 +19,18 @@ def planner_agent(state:dict) -> dict:
     resp = llm.with_structured_output(Plan,method='json_schema').invoke(prompt.Planner_prompt(user_prompt))
     return {'plan': resp}
 
+def architect_agent(state:dict) -> dict:
+     plan:Plan = state['plan'] 
+     resp = llm.with_structured_output(TaskPlan,method='json_schema').invoke(prompt.architect_prompt(plan))
+     if resp is None:
+          raise ValueError("Architect didnt return valid response")
+     resp.plan = plan
+     return {'task_plan': resp}
+
 graph = StateGraph(dict)
 graph.add_node('planner',planner_agent)
+graph.add_node('architect',architect_agent)
+graph.add_edge('planner', 'architect')
 graph.set_entry_point('planner')
 
 agent = graph.compile()
