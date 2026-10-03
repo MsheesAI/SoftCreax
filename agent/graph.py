@@ -6,6 +6,8 @@ from prompts import prompt
 from states import *
 from langgraph.constants import END
 from langgraph.graph import StateGraph
+from tools import read_file, write_file , list_files , get_current_DIRECTORY
+from langchain.agents import create_agent
 
 load_dotenv()
 
@@ -24,13 +26,36 @@ def architect_agent(state:dict) -> dict:
      resp = llm.with_structured_output(TaskPlan,method='json_schema').invoke(prompt.architect_prompt(plan))
      if resp is None:
           raise ValueError("Architect didnt return valid response")
-     resp.plan = plan
+     
      return {'task_plan': resp}
+
+def coder_agent(state:dict) -> dict:
+     steps = state['task_plan'].implementation_steps
+     current_step_index = 0
+     current_task = steps[current_step_index]
+     existing_content = read_file.run(current_task.filepath)
+
+     user_prompt = (
+          f"Task: {current_task.task_description}\n"
+          f"File:{current_task.filepath}\n"
+          f"Existing content:\n{existing_content}\n"
+     )
+     system_prompt= prompt.coder_system_prompt()
+     coder_tools = [read_file,write_file,list_files,get_current_DIRECTORY]
+     react_agent = create_agent(llm,coder_tools)   
+     react_agent.invoke({'messages':[{'role':'system','content':system_prompt},{'role':'user','content':user_prompt}]})
+     return {}
+
+
 
 graph = StateGraph(dict)
 graph.add_node('planner',planner_agent)
 graph.add_node('architect',architect_agent)
+graph.add_node('coder',coder_agent)
+
 graph.add_edge('planner', 'architect')
+graph.add_edge('architect', 'coder')
+
 graph.set_entry_point('planner')
 
 agent = graph.compile()
