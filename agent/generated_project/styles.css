@@ -1,0 +1,182 @@
+/*
+  Calculator UI Styles
+  ====================
+  This stylesheet defines a clean, responsive design for a simple calculator.
+  It uses CSS custom properties for easy theming, a grid layout for the buttons,
+  and includes focus/hover states for accessibility.
+*/
+
+/* ---------------------------------------------------------------
+   Root Variables – colors, fonts, spacing
+   --------------------------------------------------------------- */
+:root {
+  /* Colors */
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-primary: #4a90e2;          /* Main accent */
+  --color-primary-dark: #357ab8;    /* Darker accent for hover */
+  --color-operator: #ff9500;        /* Operator buttons */
+  --color-operator-dark: #e08900;   /* Operator hover */
+  --color-text: #333333;
+  --color-text-light: #ffffff;
+
+  /* Font */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 1rem; /* 16px */
+  --font-size-display: 2.5rem;
+  --font-size-button: 1.2rem;
+
+  /* Sizing */
+  --calc-max-width: 380px;
+  --calc-padding: 1rem;
+  --button-gap: 0.5rem;
+  --button-radius: 0.4rem;
+}
+
+/* ---------------------------------------------------------------
+   Global resets / base styles
+   --------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%; /* 16px */
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* ---------------------------------------------------------------
+   Calculator container
+   --------------------------------------------------------------- */
+.calculator {
+  width: 100%;
+  max-width: var(--calc-max-width);
+  background-color: var(--color-surface);
+  border-radius: 1rem;
+  padding: var(--calc-padding);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: var(--button-gap);
+}
+
+/* ---------------------------------------------------------------
+   Display (input / result)
+   --------------------------------------------------------------- */
+.display {
+  background-color: #e9e9e9;
+  border-radius: 0.6rem;
+  padding: 0.8rem 1rem;
+  font-size: var(--font-size-display);
+  font-weight: 300;
+  text-align: right;
+  overflow-x: auto; /* allow long numbers to scroll */
+  white-space: nowrap;
+  color: var(--color-text);
+}
+
+/* Hide scrollbar but keep functionality for WebKit */
+.display::-webkit-scrollbar {
+  height: 0.4rem;
+}
+.display::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.2rem;
+}
+
+/* ---------------------------------------------------------------
+   Buttons grid
+   --------------------------------------------------------------- */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(3rem, auto);
+  gap: var(--button-gap);
+}
+
+/* Base button styling – matches the HTML class "calc-button" */
+.calc-button {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--button-radius);
+  font-size: var(--font-size-button);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calc-button:focus {
+  outline: 3px solid var(--color-primary-dark);
+  outline-offset: 2px;
+}
+
+.calc-button:hover,
+.calc-button:focus-visible {
+  background-color: var(--color-primary-dark);
+}
+
+/* Operator buttons – identified via data-action attribute */
+.calc-button[data-action^="operator-"] {
+  background-color: var(--color-operator);
+}
+
+.calc-button[data-action^="operator-"]:hover,
+.calc-button[data-action^="operator-"]:focus-visible {
+  background-color: var(--color-operator-dark);
+}
+
+/* Equals button – spans full width */
+.calc-button.equals {
+  grid-column: span 4;
+  background-color: var(--color-operator);
+}
+
+.calc-button.equals:hover,
+.calc-button.equals:focus-visible {
+  background-color: var(--color-operator-dark);
+}
+
+/* ---------------------------------------------------------------
+   Responsive adjustments – mobile first
+   --------------------------------------------------------------- */
+@media (max-width: 480px) {
+  :root {
+    --calc-max-width: 100%;
+    --font-size-display: 2rem;
+    --font-size-button: 1rem;
+    --button-gap: 0.4rem;
+    --calc-padding: 0.8rem;
+  }
+
+  .calc-button {
+    font-size: var(--font-size-button);
+    padding: 0.6rem 0;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Accessibility – ensure sufficient contrast & focus visibility
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .calc-button {
+    transition: none;
+  }
+}

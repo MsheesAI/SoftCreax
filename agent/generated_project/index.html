@@ -5,35 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <div class="calculator">
-        <div class="display" id="display"></div>
+        <!-- Display screen -->
+        <div class="display" id="display" aria-live="polite" aria-label="Calculator display"></div>
+        <!-- Buttons container -->
         <div class="buttons">
-            <!-- Digits -->
-            <button data-action="digit-7">7</button>
-            <button data-action="digit-8">8</button>
-            <button data-action="digit-9">9</button>
-            <button data-action="operator-divide">/</button>
+            <!-- Row 1 -->
+            <button class="calc-button" data-action="digit-7" aria-label="7">7</button>
+            <button class="calc-button" data-action="digit-8" aria-label="8">8</button>
+            <button class="calc-button" data-action="digit-9" aria-label="9">9</button>
+            <button class="calc-button" data-action="operator-divide" aria-label="Divide">/</button>
 
-            <button data-action="digit-4">4</button>
-            <button data-action="digit-5">5</button>
-            <button data-action="digit-6">6</button>
-            <button data-action="operator-multiply">*</button>
+            <!-- Row 2 -->
+            <button class="calc-button" data-action="digit-4" aria-label="4">4</button>
+            <button class="calc-button" data-action="digit-5" aria-label="5">5</button>
+            <button class="calc-button" data-action="digit-6" aria-label="6">6</button>
+            <button class="calc-button" data-action="operator-multiply" aria-label="Multiply">*</button>
 
-            <button data-action="digit-1">1</button>
-            <button data-action="digit-2">2</button>
-            <button data-action="digit-3">3</button>
-            <button data-action="operator-subtract">-</button>
+            <!-- Row 3 -->
+            <button class="calc-button" data-action="digit-1" aria-label="1">1</button>
+            <button class="calc-button" data-action="digit-2" aria-label="2">2</button>
+            <button class="calc-button" data-action="digit-3" aria-label="3">3</button>
+            <button class="calc-button" data-action="operator-subtract" aria-label="Subtract">-</button>
 
-            <button data-action="digit-0">0</button>
-            <button data-action="clear">C</button>
-            <button data-action="delete">←</button>
-            <button data-action="operator-add">+</button>
+            <!-- Row 4 -->
+            <button class="calc-button" data-action="digit-0" aria-label="0">0</button>
+            <button class="calc-button" data-action="clear" aria-label="Clear">C</button>
+            <button class="calc-button" data-action="delete" aria-label="Delete">DEL</button>
+            <button class="calc-button" data-action="operator-add" aria-label="Add">+</button>
 
-            <button data-action="equals" class="equals">=</button>
+            <!-- Row 5 -->
+            <button class="calc-button equals" data-action="equals" aria-label="Equals">=</button>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
