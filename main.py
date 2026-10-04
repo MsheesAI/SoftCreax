@@ -1,6 +1,10 @@
-def main():
-    print("Hello from softcreax!")
+from agent.graph import agent
 
+user_prompt = "Create a simple Calculator Web Application"
 
-if __name__ == "__main__":
-    main()
+result = agent.invoke(
+    {"user_prompt": user_prompt},
+    {"recursion_limit": 100}
+)
+
+print(result)
